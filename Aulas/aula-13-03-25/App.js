@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Classe />
+      <Classe name="User" />
     </View>
   );
 }
@@ -19,23 +19,21 @@ const styles = StyleSheet.create({
   },
 });
 
-class Classe extends React.PureComponent {
-    state = {
-        titleText : 'Ninguem apertou o botao'
-    }
-    onPressButton = (name) => {
-        this.setState({titleText: `Botao pressionado por ${name}`})
-    }
-  render() {
+const Classe = (props) => {
+    const [titleText, setTitleText] = React.useState('Ninguem pressionou o botao');
+
+    const onPressButton = (name) => {
+        setTitleText(`Botao pressionado por ${name}`);
+    };
+
     return (
       <View>
         <Text>
-        {this.state.titleText}
+        {titleText}
         </Text>
         <Button title='Stop capturing'
-        onPress={() => this.onPressButton(this.props.name)}
+        onPress={() => onPressButton(props.name)}
         color='#FF0000'></Button>
       </View>
     );
-  }
 }

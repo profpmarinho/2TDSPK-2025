@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, FlatList, Modal, Text, Image, Button, StyleSheet, Dimensions } from 'react-native';
 import PizzaItem from './PizzaItem';
+import CartPizza from './CartPizza';
 
 const pizzas = [
  { id: '1', name: 'Margherita', description: 'Tomate, mussarela, manjericão', price: 8.99, image: 'https://s2-receitas.glbimg.com/RL-dN3YlvejAXwiPYoguGlE2p_0=/0x0:1280x800/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_1f540e0b94d8437dbbc39d567a1dee68/internal_photos/bs/2022/C/H/HXf1trQZGtIylAzO2SUg/pizza-margherita-receita.jpg', ingredients: 'Tomate, mussarela, manjericão' },
@@ -23,6 +24,10 @@ export default function App() {
     setCart([...cart, pizza]);
   };
 
+  const handleCloseModal = () => {
+      setModalVisible(false);
+      setSelectedPizza(null); // This is the key addition
+  };
   const handleLongPress = (pizza) => {
     setSelectedPizza(pizza);
     setModalVisible(true);
@@ -34,30 +39,30 @@ export default function App() {
 
   const isPortrait = () => {
     const dim = Dimensions.get('screen');
+    console.log(`isPortrait=${dim.height >= dim.width}`);
     return dim.height >= dim.width;
-  };
-
-  const calculateTotal = () => {
-    return cart.reduce((total, pizza) => total + pizza.price, 0).toFixed(2);
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={pizzas}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-      />
-      <View style={isPortrait() ? styles.cartPortrait : styles.cartLandscape}>
-        <Text>Cart:</Text>
-        {cart.map((pizza, index) => (
-          <Text key={index}>{pizza.name} - ${pizza.price.toFixed(2)}</Text>
-        ))}
-        <Text>Total: ${calculateTotal()}</Text>
-        <Button title="Clear Cart" onPress={() => setCart([])} />
+      <View style={isPortrait() ? styles.listContainerPortrait : styles.listContainerLandscape}>
+        <FlatList
+          data={pizzas}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+        />
+
+        <CartPizza
+          cart={cart}
+          selectedPizza={selectedPizza}
+          isPortrait={isPortrait()}
+          onCloseModal={handleCloseModal}
+          onClearCart={() => setCart([])}
+        />
       </View>
-      {selectedPizza && (
+
+      {selectedPizza && isPortrait() && (
         <Modal
           visible={modalVisible}
           transparent={true}
@@ -77,20 +82,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+  },
+  listContainerPortrait: {
+    flex: 2,
+  },
+  listContainerLandscape: {
+    flex: 2,
+    flexDirection: 'row',
   },
   list: {
     flex: 1,
-  },
-  cartPortrait: {
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
-  },
-  cartLandscape: {
-    padding: 10,
-    borderLeftWidth: 1,
-    borderLeftColor: '#ccc',
   },
   modalContainer: {
     flex: 1,

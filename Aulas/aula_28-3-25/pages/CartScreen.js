@@ -26,11 +26,17 @@ export default function CartScreen() {
   );
 
   return (
-    <FlatList
-      data={cartItems}
-      renderItem={renderItem}
-      keyExtractor={item => item.id}
-    />
+    <View style={{ flex: 1, padding: 10 }}>
+      {cartItems.length === 0 ? (
+        <Text style={styles.emptyMessage}>Cart is empty</Text>
+      ) : (
+        <FlatList
+          data={cartItems}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+      )}
+    </View>
   );
 }
 
@@ -67,5 +73,11 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 5,
     marginVertical: 5,
+  },
+  emptyMessage: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#666',
   },
 });

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, FlatList, Modal, Text, Image, Button, StyleSheet, Dimensions } from 'react-native';
 import PizzaItem from './PizzaItem';
 import CartPizza from './CartPizza';
+import { PaperProvider } from 'react-native-paper';
 
 
 export default function App() {
@@ -50,21 +51,9 @@ const pizzas = [
     setSelectedPizza(null); // This is the key addition
   };
   return (
-    <View style={styles.container}>
-      <View style={isPortrait() ? styles.listContainerPortrait : styles.listContainerLandscape}>
-        <FlatList
-            data={pizzas}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            style={styles.list}
-          />
-          <CartPizza cart={cart} selectedPizza={selectedPizza} onCloseModal={handleCloseModal}  
-          onClearCart={() => setCart([])} isPortrait={isPortrait()} />
-
-      </View>
+    <PaperProvider>
       
-      
-    </View>
+    </PaperProvider>
     
   );
 }

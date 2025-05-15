@@ -23,7 +23,7 @@ export const db = getFirestore(app);
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebaseConfig';
+import { app } from './firebaseConfig';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -37,12 +37,23 @@ export default function LoginScreen() {
       setError(e.message);
     }
   };
-
+const registerUser = async (email, name, password) => { 
+  try { 
+    const { user } = await createUserWithEmailAndPassword(auth, email, password) 
+    console.log("> Updating profile") 
+    await updateProfile(user, { displayName: name, }); 
+  
+  } catch (e) {
+    setError(e.message);
+  }
+}
   return (
     <View>
       <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
       <TextInput placeholder="Senha" secureTextEntry value={password} onChangeText={setPassword} />
       <Button title="Login" onPress={login} />
+            <Button title="Signup" onPress={registerUser} />
+
       {error ? <Text>{error}</Text> : null}
     </View>
   );

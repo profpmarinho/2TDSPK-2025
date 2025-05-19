@@ -1,25 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { remoteConfig } from './firebaseConfig';
-import { fetchAndActivate, getValue } from 'firebase/remote-config';
+import { fetchAndActivate, getValue, setDefaultConfig } from 'firebase/remote-config';
 
 export default function AppWarning() {
   const [loading, setLoading] = useState(true);
   const [floodWarning, setFloodWarning] = useState(false);
+  const [error, setError] = useState(null);
 
   const loadConfig = async () => {
     try {
+      // Set default config first
+      const defaults = {
+        floodWarning: 'false'
+      };
+      
+      //await setDefaultConfig(remoteConfig, defaults);
+
+      // Configure settings with higher timeout
       remoteConfig.settings = {
-        minimumFetchIntervalMillis: 3600,
+        minimumFetchIntervalMillis: 6000, // 1 minute
+        fetchTimeoutMillis: 3000, // 30 seconds
       };
-      remoteConfig.defaultConfig = {
-        floodWarning: 'false',
-      };
+
+      // Fetch and activate config
       await fetchAndActivate(remoteConfig);
       const flag = getValue(remoteConfig, 'floodWarning').asString();
       setFloodWarning(flag === 'true');
+      setError(null);
     } catch (e) {
       console.warn('Remote Config failed:', e);
+      setError('Unable to fetch remote configuration');
+      // Fallback to default value
+      setFloodWarning(false);
     } finally {
       setLoading(false);
     }
@@ -43,6 +56,9 @@ export default function AppWarning() {
       <Text style={styles.text}>
         {floodWarning ? '⚠️ Flood Alert in São Paulo!' : '✅ Everything is OK in São Paulo'}
       </Text>
+      {error && (
+        <Text style={styles.errorText}>{error}</Text>
+      )}
     </View>
   );
 }

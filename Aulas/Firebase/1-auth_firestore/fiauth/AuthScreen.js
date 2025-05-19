@@ -57,15 +57,15 @@ export default function AuthScreen() {
     //EXEMPLO DE QUERY
     /*
     async function buscarUsuariosPorDisplayName(displayName) {
-  const usuariosRef = collection(db, 'usuarios');
-  const q = query(usuariosRef, where('displayName', '==', displayName));
-  const querySnapshot = await getDocs(q);
+      const usuariosRef = collection(db, 'usuarios');
+      const q = query(usuariosRef, where('displayName', '==', displayName));
+      const querySnapshot = await getDocs(q);
 
-  const usuarios = [];
-  querySnapshot.forEach((doc) => {
-    usuarios.push({ id: doc.id, ...doc.data() });
-  });
-  return usuarios;
+      const usuarios = [];
+      querySnapshot.forEach((doc) => {
+        usuarios.push({ id: doc.id, ...doc.data() });
+      });
+      return usuarios;
 }
   */
   return (

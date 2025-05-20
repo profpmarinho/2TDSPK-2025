@@ -1,10 +1,12 @@
 import { StyleSheet } from 'react-native';
 
-import IMC from '../IMC';
+import { WordGame } from '../WordGame';
 
 export default function HomeScreen() {
   return (
-    <IMC />
+    <WordGame word="exemplo"
+    smallHint="Começa com 'E'"
+  bigHint="É uma palavra usada para ilustrar algo" />
   );
 }
 
